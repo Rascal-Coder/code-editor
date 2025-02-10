@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Blocks, Code2 } from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
 import LanguageSelector from "./LanguageSelector";
-import RunButton from "./RunButton";
+import {RunButton} from "./RunButton";
 import HeaderProfileBtn from "./HeaderProfileBtn";
 
 async function Header() {

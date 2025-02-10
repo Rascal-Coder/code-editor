@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { defineMonacoThemes, LANGUAGE_CONFIG } from "../_constants";
 import { Editor } from "@monaco-editor/react";
 import { RotateCcwIcon, ShareIcon, TypeIcon } from "lucide-react";
-// import { EditorPanelSkeleton } from "./EditorPanelSkeleton";
+import { EditorPanelSkeleton } from "./EditorPanelSkeleton";
 import useMounted from "@/hooks/useMounted";
 import ShareSnippetDialog from "./ShareSnippetDialog";
 import { Icon } from "@iconify/react";
@@ -13,14 +13,15 @@ import { Button } from "@/components/ui/button";
 
 function EditorPanel() {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
-  const { language, theme, fontSize, editor, setFontSize, setEditor } = useCodeEditorStore();
+  const { language, theme, fontSize, editor, setFontSize, setEditor } =
+    useCodeEditorStore();
 
   const mounted = useMounted();
 
   useEffect(() => {
     const savedCode = localStorage.getItem(`editor-code-${language}`);
     const newCode = savedCode || LANGUAGE_CONFIG[language].defaultCode;
-    
+
     if (editor) editor.setValue(newCode);
   }, [language, editor]);
 
@@ -45,7 +46,12 @@ function EditorPanel() {
     setFontSize(size);
     localStorage.setItem("editor-font-size", size.toString());
   };
-
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }, []);
   if (!mounted) return null;
 
   return (
@@ -59,7 +65,9 @@ function EditorPanel() {
             </div>
             <div>
               <h2 className="text-sm font-medium text-white">Code Editor</h2>
-              <p className="text-xs text-gray-500">Write and execute your code</p>
+              <p className="text-xs text-gray-500">
+                Write and execute your code
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -72,7 +80,9 @@ function EditorPanel() {
                   min="12"
                   max="24"
                   value={fontSize}
-                  onChange={(e) => handleFontSizeChange(parseInt(e.target.value))}
+                  onChange={(e) =>
+                    handleFontSizeChange(parseInt(e.target.value))
+                  }
                   className="w-20 h-1 bg-gray-600 rounded-lg cursor-pointer"
                 />
                 <span className="text-sm font-medium text-gray-400 min-w-[2rem] text-center">
@@ -102,7 +112,10 @@ function EditorPanel() {
           </div>
         </div>
         <div className="relative group rounded-xl overflow-hidden ring-1 ring-white/[0.05]">
-        <Editor
+          {isLoading ? (
+            <EditorPanelSkeleton />
+          ) : (
+            <Editor
               height="600px"
               language={LANGUAGE_CONFIG[language].monacoLanguage}
               onChange={handleEditorChange}
@@ -131,10 +144,15 @@ function EditorPanel() {
                 },
               }}
             />
-
+          )}
         </div>
       </div>
-      {isShareDialogOpen && <ShareSnippetDialog onClose={() => setIsShareDialogOpen(false)} />}
+      {
+        <ShareSnippetDialog
+          onClose={() => setIsShareDialogOpen(false)}
+          open={isShareDialogOpen}
+        />
+      }
     </div>
   );
 }

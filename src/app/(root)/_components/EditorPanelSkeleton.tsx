@@ -2,6 +2,7 @@ import { Terminal } from "lucide-react";
 
 export function EditorPanelSkeleton() {
   return (
+
     <div className="relative">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 rounded-xl blur-2xl" />
       <div className="relative bg-[#12121a]/90 backdrop-blur rounded-xl border border-white/[0.05] p-6 h-[600px]">
@@ -56,16 +57,6 @@ export function OutputPanelSkeleton() {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-// Loading state for the entire editor view
-export function EditorViewSkeleton() {
-  return (
-    <div className="space-y-6 p-4">
-      <EditorPanelSkeleton />
-      <OutputPanelSkeleton />
     </div>
   );
 }

@@ -1,15 +1,28 @@
 import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 import { useState } from "react";
-import { X } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
-function ShareSnippetDialog({ onClose }: { onClose: () => void }) {
+function ShareSnippetDialog({
+  onClose,
+  open,
+}: {
+  onClose: () => void;
+  open: boolean;
+}) {
   const [title, setTitle] = useState("");
   const [isSharing, setIsSharing] = useState(false);
   const { language, getCode } = useCodeEditorStore();
 
   const handleShare = async (e: React.FormEvent) => {
     e.preventDefault();
-
     setIsSharing(true);
 
     try {
@@ -23,52 +36,62 @@ function ShareSnippetDialog({ onClose }: { onClose: () => void }) {
     }
   };
 
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-[#1e1e2e] rounded-lg p-6 w-full max-w-md">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-white">Share Snippet</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-300">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+  const handleClose = () => {
+    setTimeout(onClose, 300);
+  };
 
-        <form onSubmit={handleShare}>
-          <div className="mb-4">
-            <label htmlFor="title" className="block text-sm font-medium text-gray-400 mb-2">
+  return (
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="bg-[#1e1e2e] border-[#313244] sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-semibold text-white">
+            Share Snippet
+          </DialogTitle>
+          <DialogDescription className="text-gray-400">
+            Share your code snippet with others by giving it a title.
+          </DialogDescription>
+        </DialogHeader>
+
+        <form onSubmit={handleShare} className="space-y-4">
+          <div className="space-y-2">
+            <label
+              htmlFor="title"
+              className="text-sm font-medium text-gray-400"
+            >
               Title
             </label>
-            <input
-              type="text"
+            <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 bg-[#181825] border border-[#313244] rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="bg-[#181825] border-[#313244] text-white focus-visible:ring-blue-500"
               placeholder="Enter snippet title"
               required
             />
           </div>
 
           <div className="flex justify-end gap-3">
-            <button
+            <Button
               type="button"
+              variant="ghost"
               onClick={onClose}
-              className="px-4 py-2 text-gray-400 hover:text-gray-300"
+              className="text-gray-400 hover:text-gray-300 hover:bg-[#313244]"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               disabled={isSharing}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 
+              className="bg-blue-500 text-white hover:bg-blue-600 
               disabled:opacity-50"
             >
               {isSharing ? "Sharing..." : "Share"}
-            </button>
+            </Button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
+
 export default ShareSnippetDialog;
